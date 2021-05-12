@@ -169,3 +169,82 @@ group by t.DirectorName;
 -----------------------------------------------
 -----------------------------------------------
 4.
+"""List the pair of students with their names who have rated the same movie(s)
+at least once with the same rating (Output format: RollNo1, Name1, RollNo2, 
+Name2, Title, Rating). Note, it is OK if the same pair of students shows 
+up twice in the result set with their RollNo reversed."""
+
+
+"""Try to find RollNo1 RollNo2 MID and Rating"""
+"""Cartesian Product or Inner Join is an option""" 
+
+Select * 
+from Rating as r1 inner join Rating as r2 
+on r1.MID = r2.MID and r1.Rating = r2.Rating and r1.Rollno != r2.Rollno
+
+
+"""Without Join"""
+Select r1.Rollno as RollNo1, r2.Rollno as RollNo2, r1.Rating as Rating, r1.MID as MID
+from Rating as r1 inner join Rating as r2 
+where r1.MID = r2.MID and r1.Rating = r2.Rating and r1.Rollno != r2.Rollno
+
+
+"""Now Dive into the Problem"""
+Select r.RollNo1, s1.Name as Name1, r.RollNo2, s2.Name as Name2, m.Title, r.Rating
+from Student as s1, Student as s2, Movie as m,
+(
+Select r1.Rollno as RollNo1, r2.Rollno as RollNo2, r1.Rating as Rating, r1.MID as MID
+from Rating as r1 inner join Rating as r2 
+where r1.MID = r2.MID and r1.Rating = r2.Rating and r1.Rollno != r2.Rollno
+) as r 
+where r.RollNo1 = s1.Rollno and r.RollNo2 = s2.Rollno and r.MID =  m.MID
+
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+5.
+"""Determine is the average number of friends per student. (Output format: AvgNo). 
+Note, your result should be just one row and one column which is the average of 
+the number of friends each student has."""
+
+""" Frist Find the number of friends per Student """
+"""Do a union"""
+"""This way we consider 1--2 && 2--1"""
+Select * 
+from Friend as f1
+union
+(Select f2.FriendRoll, f2.OwnRoll 
+from Friend as f2) 
+
+
+"""Find Average in above"""
+Select t.OwnRoll, count(t.FriendRoll) as num
+from
+(
+Select * 
+from Friend as f1
+union
+(Select f2.FriendRoll, f2.OwnRoll 
+from Friend as f2) 
+) as t
+group by t.OwnRoll;
+
+
+"""Find Answer"""
+Select avg(q.num)
+from 
+(
+Select t.OwnRoll, count(t.FriendRoll) as num
+from
+(
+Select * 
+from Friend as f1
+union
+(Select f2.FriendRoll, f2.OwnRoll 
+from Friend as f2) 
+) as t
+group by t.OwnRoll
+) as q
+;
