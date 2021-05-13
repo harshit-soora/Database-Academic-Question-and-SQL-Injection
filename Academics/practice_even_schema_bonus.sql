@@ -70,3 +70,16 @@ insert into Rating values
 (7, 105, '2011-02-01', 5),
 (8, 105, '2011-03-01', 3);
 
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+BONUS: 
+"""List the students whose difference of ratings for the same movie 
+on consecutive dates is greater than 1. (Output Format: RollNo, Name, 
+Title, RatingDate1, Rating1, RatingDate2, Rating2). Note, if for the 
+same movie, this happens more than once, you may either report that 
+once or as many times as they occur. Also, for the same student, 
+there might be multiple such movies."""
+
+
