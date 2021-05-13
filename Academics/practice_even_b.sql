@@ -8,16 +8,6 @@ whose Year of Admission is after the Year of Release of the movie.
 (Output format: Title, YearOfRelease, Rollno, YearOfAdmission). 
 Note, values for some of the columns may repeat for different rows."""
 
-"""Need to add some more rows to table Rating"""
-insert into Rating values
-(7, 101, '2011-01-01', 5),
-(8, 102, '2011-02-01', 5),
-(9, 103, '2011-03-01', 3),
-(10, 104, '2011-01-01', 5),
-(7, 105, '2011-02-01', 5),
-(8, 105, '2011-03-01', 3);
-
-
 """Find MID where rating is given by atleast 4 student"""
 Select r.MID, r.Rollno, s.YearOfAdmission
 from Rating as r, Student as s
@@ -95,3 +85,96 @@ order by x.Title
 -----------------------------------------------
 -----------------------------------------------
 7.
+"""List the students whose average rating over all movies 
+(including multiple instances of rating the movies on different dates) 
+is less than the average rating of those movies by his/her friends 
+(including multiple instances of rating the movies on different dates). 
+(Output format: RollNo1, AverageRating1, RollNo2, AverageRating2)"""
+
+"""delete a new entry""" 
+"""to see if 0 is considered"""
+delete from Rating
+where Rollno = 10;
+
+
+"""Fing average rating by each roll no"""
+Select r.Rollno, avg(r.Rating) as average
+from Rating as r 
+group by r.Rollno
+
+
+"""Friend List : Consider (1, 2) & (2, 1) both"""
+Select * from Friend 
+union 
+(
+Select f.FriendRoll, f.OwnRoll from Friend as f
+)
+order by OwnRoll
+
+
+"""Now club it with friends"""
+Select x.OwnRoll as RollNo1, l1.average as AverageRating1,
+x.FriendRoll as RollNo2, l2.average as AverageRating2
+from 
+(
+Select * from Friend 
+union 
+(
+Select f.FriendRoll, f.OwnRoll from Friend as f
+)
+order by OwnRoll
+) as x,
+(
+Select r.Rollno, avg(r.Rating) as average
+from Rating as r 
+group by r.Rollno
+) as l1,
+(
+Select r.Rollno, avg(r.Rating) as average
+from Rating as r 
+group by r.Rollno
+) as l2
+where l1.Rollno = x.OwnRoll and l2.Rollno = x.FriendRoll
+and l1.average > l2.average 
+
+"""ONLY DOWNSIGHT HERE IS you didn't consider friends with zero average"""
+
+
+"""Now the Answer"""
+----
+https://stackoverflow.com/questions/67514627/consider-average-rating-as-zero-in-case-that-roll-no-is-not-in-the-rating-list-i
+----
+
+
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+8.
+"""
+List the 4 th most popular movies(s). (Output format: Title, 
+NumberOfStudentRatings). Note, upto the 3 rd most popular movie, 
+all movies having the same popularity will have to be counted only once.
+For the 4 th position, all movies having that popularity are to be listed.
+"""
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+9. 
+"""List the students who have not rated any movie that have been rated 
+by his/her friend. (Output Format: RollNo1, Name1, RollNo2, Name2)"""
+
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+10. 
+"""List the top 4 most popular movies. (Output format: Title, 
+NumberOfStudentRatings). Note, popularity is determined by the number 
+of ratings received a movie, which is the number of distinct students 
+who have rated the movie. Also, here the number 4 denotes 4 distinct values 
+of popularity with possibly multiple movies having the same popularity."""
