@@ -145,7 +145,59 @@ and l1.average > l2.average
 https://stackoverflow.com/questions/67514627/consider-average-rating-as-zero-in-case-that-roll-no-is-not-in-the-rating-list-i
 ----
 
+"""Gentle Update
+Do this to omit the error stated earlier"""
 
+Select distinct r.Rollno, avg(r.Rating) as average
+from Rating as r 
+group by r.Rollno
+union
+(
+Select RollNo, 0 as average
+from Student 
+where Rollno not in 
+(
+Select RollNo 
+from Rating
+)
+)
+
+"""you may use coalesce 
+https://www.w3schools.com/sql/func_sqlserver_coalesce.asp
+"""
+
+Select x.OwnRoll as RollNo1, l1.average as AverageRating1,
+x.FriendRoll as RollNo2, l2.average as AverageRating2
+from 
+(
+Select * from Friend 
+union (Select f.FriendRoll, f.OwnRoll from Friend as f)
+order by OwnRoll
+) as x,
+(
+Select distinct r.Rollno, avg(r.Rating) as average
+from Rating as r 
+group by r.Rollno
+union
+(
+Select RollNo, 0 as average
+from Student 
+where Rollno not in 
+(Select RollNo from Rating))
+) as l1,
+(
+Select distinct r.Rollno, avg(r.Rating) as average
+from Rating as r 
+group by r.Rollno
+union
+(
+Select RollNo, 0 as average
+from Student 
+where Rollno not in 
+(Select RollNo from Rating))
+) as l2
+where l1.Rollno = x.OwnRoll and l2.Rollno = x.FriendRoll
+and l1.average > l2.average 
 
 
 -----------------------------------------------
