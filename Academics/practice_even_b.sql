@@ -174,6 +174,7 @@ Select * from Friend
 union (Select f.FriendRoll, f.OwnRoll from Friend as f)
 order by OwnRoll
 ) as x,
+
 (
 Select distinct r.Rollno, avg(r.Rating) as average
 from Rating as r 
@@ -185,6 +186,7 @@ from Student
 where Rollno not in 
 (Select RollNo from Rating))
 ) as l1,
+
 (
 Select distinct r.Rollno, avg(r.Rating) as average
 from Rating as r 
@@ -196,6 +198,7 @@ from Student
 where Rollno not in 
 (Select RollNo from Rating))
 ) as l2
+
 where l1.Rollno = x.OwnRoll and l2.Rollno = x.FriendRoll
 and l1.average > l2.average 
 
